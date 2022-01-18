@@ -19,7 +19,7 @@ class BBG(Widget):
         self.img = Image(source = f'{random.randint(1,2)}.jpg', pos = (0, 0), size = Window.size, allow_stretch = True, keep_ratio = False)
         self.add_widget(self.img)
         self.img.bind(size = self.update_rect,)
-            
+   
         self.pth = InstructionGroup()
         self.w = 4#Path Segments'(Grass,Line) width
         self.step = 5
@@ -28,7 +28,7 @@ class BBG(Widget):
         #print(number_of_lines_in_path)
 
         self.div = int(Window.size[0]/number_of_lines_in_path)#Dividing Equal Sized Paths
-        px = 0
+        px = -500
         py = random.randint(int(Window.size[1]/3), int(Window.size[1]/2))
         
         for i in range(0, number_of_lines_in_path+50):
@@ -55,7 +55,7 @@ class BBG(Widget):
         #For Movement of all Path's Segments
         for i in range(0,self.pth.length()):
             if (type(self.pth.children[i]) == type(Line())):
-                if (self.pth.children[i].points[2] != 0):
+                if (self.pth.children[i].points[2] >= -250):
                     newL = self.pth.children[i]
                     p = self.pth.children[i].points
                     p[0] -= self.step
@@ -63,7 +63,7 @@ class BBG(Widget):
                     self.pth.insert(i, Line(points = p, width = self.w))
                     self.pth.remove(newL)
             if (type(self.pth.children[i]) == type(Quad())):
-                if (self.pth.children[i].points[2] != 0):
+                if (self.pth.children[i].points[2] >= -250):
                     newL = self.pth.children[i]
                     p = self.pth.children[i].points
                     p[0] -= self.step
@@ -77,19 +77,21 @@ class BBG(Widget):
                 
         for i in range(0,self.pth.length()):#Deleting Quad
             if (type(self.pth.children[i]) == type(Quad())):
-                if (self.pth.children[i].points[2] <= 0):
+                if (self.pth.children[i].points[2] <= -250):
                     to_delete_Quad = self.pth.children[i]
                     if (type(self.pth.children[i-1]) == type(Color())):
+                        #print(1)
                         self.pth.remove(self.pth.children[i-1])
                     self.pth.remove(to_delete_Quad)
                     break
                                 
         for i in range(0,self.pth.length()):#Deleting Line
             if (type(self.pth.children[i]) == type(Line())):
-                if (self.pth.children[i].points[2] <= 0):
+                if (self.pth.children[i].points[2] <= -250):
                     old_Line = self.pth.children[i]
                     length = self.pth.children[i].points[2] - self.pth.children[i].points[0]
                     if (type(self.pth.children[i-1]) == type(Color())):
+                        #print(2)
                         self.pth.remove(self.pth.children[i-1])
                     self.pth.remove(old_Line)
                     self.make_path(length)#Adding new Segment
